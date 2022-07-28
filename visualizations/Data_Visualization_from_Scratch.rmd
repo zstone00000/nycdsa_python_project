@@ -1,0 +1,159 @@
+---
+title: "Data Visualization from Scratch"
+author: "NYC Data Science Academy"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Introduction 
+
++ NYC's Department of Health and Mental Hygiene (DOHMH) conducts unannounced inspections of restaurants at least once a year to check food handling, food temperature, personal hygiene, and vermin control. Since 2010, NYC restaurants have to prominently post their Grade (e.g. A/B/C) which empowers diners with decision-making information and incentivizes establishments to improve their hygiene.
+
++ Download the csv file from [here](https://lukepublicbucket.s3.us-east-2.amazonaws.com/nyc_dohmh_20210724.csv) and rename it to `data.csv`. Move the file to the same directory of your markdown file and use relative path to read it.
+
+The dataset was originally from [NYC Open Data](https://data.cityofnewyork.us/Health/DOHMH-New-York-City-Restaurant-Inspection-Results/43nn-pn8j).
+
++ After you finish the lab, please push your rmarkdown file (**w/o data**) to the corresponding folder under the homework repository.
+
+
+## 1. Data Preprocessing
+
+### 1.1 Load libraries
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+### 1.2 Load dataset
+```{r load_data, cache=TRUE, warning=FALSE, message=FALSE}
+raw.df <- readr::read_csv("./data.csv")
+```
+
+### 1.3 Clean your data
+1. Convert all the column names to lower cases and rename the   cuisine description  column to  cuisine ,   inspection date` to `inspection.date`.
+2. Convert the `inspection.date` column from character to date format.
+3. If we want to perform analysis for each month, then the date column would be pretty annoying because you have different date for each month. Mutate a new column called `month` that extract the month from `inspection.date` and convert it to numeric. For example, 03/24/2016 -> 03
+4. We have scores for some of the observations but their grades are missing. Impute the missing values in grade column with the following rules:
+    + 0 <= score < 14: A
+    + 14 <= score < 28: B
+    + score >= 28: C
+    + You can ignore the other grades
+5. Rename the description from the action column to something short so it won't blow up your graph.
+    + "Violations were cited in the following area(s)." => "violations"
+    + "Establishment Closed by DOHMH. Violations were cited in the following area(s) and those requiring immediate action were addressed." => "closed"
+    + "Establishment re-closed by DOHMH" => "reclosed"
+    + "No violations were recorded at the time of this inspection." => "no violations"
+    + "Establishment re-opened by DOHMH" => "reopened"
+    + Hint: `gsub()` function might be helpful. The function takes regular expression as the `pattern` parameter, which means `()` is treated as a special character. You might want to set `fixed=TRUE` in the `gsub()` function to leave the pattern as it is.
+    + **reclosed** means they failed the second time during the same inspection cycle and **reopened** means they passed.
+6. We want to filter out missing values to make our life easier for further analysis.
+    + Filter out missing values (if any) from the `boro` column.
+    + Filter out missing values and negative values  (if any)  from the `score` column.
+    + Filter out any `inspection date` that doesn't make any sense  (if any).
+7. Select the following columns from `raw.df`: `camis`, `boro`, `cuisine`, `inspection.date`, `action`, `score`, `grade`, `month`
+8. Return only the unqiue inspections from the previous step and save it as a new data frame called `inspections`. The reason is one inspection might have multiple observations with different violation code but their actions are the same, so we count them as one.
+
+
+```{r preprocessing, cache=TRUE}
+# 1. Convert all the column names to lower cases and rename the columns that have empty space.
+
+# 2. Convert the inspection.date column from character to date format.
+
+# 3. Extract the month from the inspection.date column.
+
+# 4. Impute the missing values for the 'grade' column.
+
+
+# 5. Rename the description from the action column to something short so it won't blow up your graph.
+
+
+# 6. We want to filter out missing values to make our lives easier for further analysis.
+
+
+# 7. Select the following columns from raw.df: camis, boro, cuisine, inspection.date, action, score, grade, month
+
+
+# 8. Unique inspections
+
+```
+
+
+## 2. Data Visualization
+### Example questions we want to answer from this dataset
+
+- How do a restaurant's location and type of cuisine affect its inspection results?
+- Do restaurants in Manhattan have better scores than those of restaurants in Queens or the Bronx?
+- Are Manhattan restaurants cleaner than those in Queens or the Bronx? 
+- Do restaurants of your favorite cuisine perform better or worse in health inspections than the rest of the restaurants?
+
+### 2.1 Inspection Grade vs Borough
+- What is your conclusion?
+```{r}
+#Bar plot: Restaurants by borough and grade
+```
+
+
+
+### 2.2 Inspection Grade vs Cuisine
+- There are too many cuisine in the dataset and it will make the plot hard to read. Let's just focus on the top 20 cuisines.
+- What is your conclusion?
+```{r}
+#Bar plot: Restaurants by cuisine and grade
+```
+
+
+
+#### 2.3 Scores vs. Borough
+- Since grades couldn't differentiate boroughs, let's plot restaurants by scores instead and use a density plot to account for the disparity in number of restaurants by borough.
+- What is your conclusion?
+```{r}
+#Density plot: Restaurants by score and borough
+
+```
+
+### What about inspection closures?
+- Scores don't tie directly to restaurant closures (e.g. public health hazard)
+
+### 2.4 Closures vs. Borough
+
+- Reclosed means they failed the second time during the same inspection cycle.
+- Defined the following ratios:
+    - Inspection closure ratio for each borough: % of inspections that lead to the restaurant being closed (including closed and reclosed)
+    - Repeat closure ratio for each borough: % of restaurants that were closed more than once for different inspection cycles (just count the number of closed)
+- What is your conclusion?
+```{r}
+# It could be either a barplot with two different ratios for each borough or a scatterplot with two ratios as x and y axises.
+
+
+```
+
+### 2.5 Closures vs. Cuisine and Borough
+- Finally, what if we combined both dimensions of location and cuisine? Intuitively, certain cuisines could fare better or worse in health inspections depending on the neighborhood. Used faceted bar plots of inspection closure ratios by borough with the top 20 cuisine types.
+
+- What is your conclusion?
+```{r}
+
+```
+
+
+### 2.6 Trend of score by month
+- What is your conclusion?
+```{r}
+# Find the trend of average scores by month and borough. Graph your result
+
+
+
+```
+
+
+### 2.7 Trend of inspection closure ratio by month
+- What is your conclusion?
+```{r}
+# Find the trend of the inspection closure ratio by month and borough. Graph your result.
+
+
+```
+
