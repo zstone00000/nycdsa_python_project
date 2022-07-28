@@ -8,8 +8,10 @@ Most brands making Eurorack modules are small with limited resources - resources
 
 We focus primarily on gaps in production for popular functionality, as price and size have a much less direct relationship to popularity. We provide results showing underproduction both for popular single functions and pairings of functions given their availability, and additionally analyze when redundancy in the product line should be encouraged or avoided. These insights can help these small manufacturers focus on features and feature combinations which can make their products the most competitive, and decide on the breadth of products they make. 
 
-eurorack_inspection.ipynb contains initial data import, inspection, and cleaning code
+"eurorack_inspection.ipynb" contains initial data import, inspection, and cleaning code
 
-Eurorack_EDA.ipynb contains the product analysis 
+"Eurorack_EDA.ipynb" contains the product analysis and scripts for visualizations
 
-Scraped data and the scraping code available by request.
+slide deck at: https://docs.google.com/presentation/d/1USvECYF0x0ZE_rnr5z7K5StrL9LqhRvWDGZGktRsrJA/edit?usp=sharing
+
+Scraped data and the scraping script available by request.
